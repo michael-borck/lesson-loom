@@ -3,11 +3,153 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lesson Loom</title>
+    <title>Lesson Loom — AI-assisted lesson planning from your own material</title>
+    <meta
+      name="description"
+      content="Upload a lecture, worksheet, or reading. Choose a pedagogical framework. Get a structured, timed lesson plan you can refine in conversation. Private by design — web, desktop, or self-hosted."
+    />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧵</text></svg>" />
+    <link rel="stylesheet" href="./landing/landing.css" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <header class="nav container">
+      <div class="logo">🧵 Lesson Loom</div>
+      <nav class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#run">Ways to run</a>
+        <a class="nav-cta" href="./app/">Open the web app</a>
+      </nav>
+    </header>
+
+    <section class="hero container">
+      <div class="hero-text">
+        <p class="hero-pill"><span class="dot"></span> From your material, not a blank page</p>
+        <h1>
+          Weave real teaching material into
+          <em>structured lesson plans</em>
+        </h1>
+        <p class="hero-sub">
+          Upload a lecture, worksheet, reading, or unit outline. Choose your
+          audience and a recognised pedagogical framework — Gagné, BOPPPS, or
+          5E. Get a timed, Bloom-aligned lesson plan you can refine in
+          conversation and grow into a course dashboard.
+        </p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="./app/">Use in your browser</a>
+          <a class="btn btn-ghost" id="dl-primary" href="https://github.com/michael-borck/lesson-loom/releases/latest">Download the desktop app</a>
+        </div>
+        <div class="download-meta">
+          <div class="platform-toggle" role="group" aria-label="Choose platform">
+            <button class="platform-btn" data-platform="mac">macOS</button>
+            <button class="platform-btn" data-platform="windows">Windows</button>
+            <button class="platform-btn" data-platform="linux">Linux</button>
+          </div>
+          <span id="dl-version" class="hero-note">See all releases →</span>
+        </div>
+        <p class="hero-note">
+          Your material and API key stay on your device — nothing is stored on
+          our servers, because there are no servers.
+        </p>
+      </div>
+      <div class="hero-shot">
+        <div class="slider" id="slider">
+          <figure class="slide">
+            <img src="./landing/shots/plan.png" alt="A generated lesson plan with timed segments and the AI refinement panel" />
+            <figcaption>A timed, framework-tagged plan — refined in conversation</figcaption>
+          </figure>
+          <figure class="slide">
+            <img src="./landing/shots/framework.png" alt="Choosing a pedagogical framework: Gagné, BOPPPS, or 5E" />
+            <figcaption>Pick a framework — each explains when to use it</figcaption>
+          </figure>
+          <figure class="slide">
+            <img src="./landing/shots/wizard.png" alt="Uploading teaching material to start a lesson plan" />
+            <figcaption>Start from your actual material: PDF, DOCX, Markdown, or text</figcaption>
+          </figure>
+          <figure class="slide">
+            <img src="./landing/shots/dashboard.png" alt="The course dashboard with saved lesson plans" />
+            <figcaption>Plans accumulate into a course dashboard</figcaption>
+          </figure>
+          <div class="slider-dots" id="slider-dots"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="steps container">
+      <h2>How it works</h2>
+      <div class="steps-grid">
+        <div class="step">
+          <span class="step-n">1</span>
+          <h3>Upload what you teach with</h3>
+          <p>A lecture, worksheet, case study, reading, or outline. Lesson Loom grounds the plan in <em>your</em> content — not a generic topic prompt.</p>
+        </div>
+        <div class="step">
+          <span class="step-n">2</span>
+          <h3>Set context, choose a framework</h3>
+          <p>Audience, duration, delivery mode, and where the lesson sits in your sequence. Then pick Gagné's Nine Events, BOPPPS, or the 5E model.</p>
+        </div>
+        <div class="step">
+          <span class="step-n">3</span>
+          <h3>Generate, refine, export</h3>
+          <p>A timed plan with Bloom-tagged objectives and formative checks. Ask for changes in plain language. Export Markdown when you're done.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="features container" id="features">
+      <h2>Built for real instructional design</h2>
+      <div class="features-grid">
+        <div class="card"><h3>⏱️ Timed segments</h3><p>Minute allocations that actually sum to your session length, each tagged with the framework stage it fulfils.</p></div>
+        <div class="card"><h3>🎯 Constructive alignment</h3><p>Bloom-aligned objectives with activities and formative checks matched to them — including anticipated misconceptions.</p></div>
+        <div class="card"><h3>🔗 Sequence aware</h3><p>Tell it what came before and what's next; get genuine recap hooks and foreshadowing instead of generic openers.</p></div>
+        <div class="card"><h3>🤖 GenAI policy layer</h3><p>Set an AI stance per lesson — not permitted, with acknowledgement, or required — and get a matching student-facing statement.</p></div>
+        <div class="card"><h3>💬 Refine, don't regenerate</h3><p>"Cut this to 40 minutes." "Make the middle activity group-based." The plan updates in place; the rest stays put.</p></div>
+        <div class="card"><h3>🧩 Your AI, your choice</h3><p>Anthropic, OpenAI, OpenRouter, a local Ollama, or any OpenAI-compatible endpoint — bring your own key or run it fully local.</p></div>
+      </div>
+    </section>
+
+    <section class="privacy container" id="privacy">
+      <h2>Your material never touches our servers</h2>
+      <p class="privacy-sub">Lecture notes and unpublished course material are sensitive. Lesson Loom is built so you don't have to trust us with them.</p>
+      <div class="privacy-grid">
+        <div class="privacy-item"><h3>🔑 Bring your own key</h3><p>Your API key lives in your browser or on your desktop, and calls go straight to the AI provider you chose. No middleman.</p></div>
+        <div class="privacy-item"><h3>💻 Desktop app</h3><p>A native Mac/Windows/Linux app for educators who prefer their material never to pass through a web page at all.</p></div>
+        <div class="privacy-item"><h3>🏠 Fully local option</h3><p>Point it at Ollama on your own machine and no material leaves your computer — or self-host for your whole department.</p></div>
+      </div>
+    </section>
+
+    <section class="run container" id="run">
+      <h2>Three ways to run it</h2>
+      <div class="run-grid">
+        <div class="run-card">
+          <h3>🌐 In your browser</h3>
+          <p>Nothing to install. Free static hosting, your key stored locally.</p>
+          <a class="btn btn-primary" href="./app/">Open the web app</a>
+        </div>
+        <div class="run-card">
+          <h3>🖥️ On your desktop</h3>
+          <p>A native app that feels like one — for privacy-conscious educators.</p>
+          <a class="btn btn-primary" id="dl-secondary" href="https://github.com/michael-borck/lesson-loom/releases/latest">Download</a>
+          <p class="run-note" id="dl-other"></p>
+        </div>
+        <div class="run-card">
+          <h3>🏢 Self-hosted for your team</h3>
+          <p>One Docker container, one org API key in a <code>.env</code> — educators never handle keys.</p>
+          <pre><code>git clone https://github.com/michael-borck/lesson-loom
+cd lesson-loom && cp .env.example .env
+docker compose up -d</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot container">
+      <p>
+        Open source ·
+        <a href="https://github.com/michael-borck/lesson-loom">GitHub</a> ·
+        <a href="https://github.com/michael-borck/lesson-loom/releases">All releases</a>
+      </p>
+    </footer>
+
+    <script type="module" src="./landing/landing.js"></script>
   </body>
 </html>

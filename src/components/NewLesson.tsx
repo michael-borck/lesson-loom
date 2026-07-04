@@ -7,7 +7,8 @@ import type {
 } from "../types";
 import { FRAMEWORKS } from "../frameworks";
 import { extractMaterial } from "../lib/extract";
-import { generatePlan } from "../lib/anthropic";
+import { generatePlan, settingsProblem } from "../lib/llm";
+import type { ServerConfig } from "../lib/serverConfig";
 import { upsertPlan } from "../lib/storage";
 import { navigate } from "../App";
 
@@ -52,10 +53,12 @@ const DEFAULT_CONTEXT: ContextSettings = {
 
 export function NewLesson({
   settings,
+  server,
   plans,
   onPlansChange,
 }: {
   settings: Settings;
+  server: ServerConfig | null;
   plans: LessonPlan[];
   onPlansChange: (plans: LessonPlan[]) => void;
 }) {
@@ -102,8 +105,9 @@ export function NewLesson({
   }
 
   async function onGenerate() {
-    if (!settings.apiKey) {
-      setError("Set your Anthropic API key in Settings first.");
+    const problem = settingsProblem(settings, server);
+    if (problem) {
+      setError(problem);
       return;
     }
     if (!material || !frameworkId) return;
@@ -114,6 +118,7 @@ export function NewLesson({
       const framework = FRAMEWORKS.find((f) => f.id === frameworkId)!;
       const generated = await generatePlan(
         settings,
+        server,
         framework,
         context,
         material,

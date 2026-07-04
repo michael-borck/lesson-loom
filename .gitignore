@@ -4,3 +4,5 @@ dist/
 ._*
 *.local
 tsconfig.tsbuildinfo
+src-tauri/target/
+src-tauri/gen/schemas/

@@ -1,5 +1,9 @@
 import mammoth from "mammoth/mammoth.browser";
+import * as pdfjsLib from "pdfjs-dist";
+import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import type { MaterialInput } from "../types";
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
 function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -13,6 +17,27 @@ function fileToBase64(file: File): Promise<string> {
   });
 }
 
+async function extractPdfText(data: ArrayBuffer): Promise<string> {
+  try {
+    const doc = await pdfjsLib.getDocument({ data }).promise;
+    const pages: string[] = [];
+    for (let i = 1; i <= doc.numPages; i++) {
+      const page = await doc.getPage(i);
+      const content = await page.getTextContent();
+      pages.push(
+        content.items
+          .map((item) => ("str" in item ? item.str : ""))
+          .join(" "),
+      );
+    }
+    return pages.join("\n\n").trim();
+  } catch {
+    // Scanned/encrypted PDFs — the Anthropic provider can still read these
+    // natively via the base64 document block.
+    return "";
+  }
+}
+
 export async function extractMaterial(file: File): Promise<MaterialInput> {
   const name = file.name;
   const ext = name.slice(name.lastIndexOf(".") + 1).toLowerCase();
@@ -21,9 +46,13 @@ export async function extractMaterial(file: File): Promise<MaterialInput> {
     if (file.size > 30 * 1024 * 1024) {
       throw new Error("PDF is too large (max ~30 MB).");
     }
-    // PDFs are sent to the API natively as a document block — no client-side
-    // text extraction needed, and Claude can also read figures/diagrams.
-    return { kind: "pdf", name, base64: await fileToBase64(file) };
+    // Keep both forms: the base64 goes to Anthropic natively (reads figures
+    // too); the extracted text serves OpenAI-compatible providers.
+    const [base64, text] = await Promise.all([
+      fileToBase64(file),
+      file.arrayBuffer().then(extractPdfText),
+    ]);
+    return { kind: "pdf", name, base64, text };
   }
 
   if (ext === "docx") {

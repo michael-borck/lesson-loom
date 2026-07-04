@@ -1,7 +1,8 @@
 import { useState } from "react";
 import type { LessonPlan, Settings } from "../types";
 import { getFramework } from "../frameworks";
-import { refinePlan } from "../lib/anthropic";
+import { refinePlan, settingsProblem } from "../lib/llm";
+import type { ServerConfig } from "../lib/serverConfig";
 import { upsertPlan } from "../lib/storage";
 import { downloadMarkdown } from "../lib/markdown";
 
@@ -16,10 +17,12 @@ const QUICK_ACTIONS = [
 export function PlanView({
   plan,
   settings,
+  server,
   onPlansChange,
 }: {
   plan: LessonPlan;
   settings: Settings;
+  server: ServerConfig | null;
   onPlansChange: (plans: LessonPlan[]) => void;
 }) {
   const [input, setInput] = useState("");
@@ -31,8 +34,9 @@ export function PlanView({
   async function send(instruction: string) {
     const text = instruction.trim();
     if (!text || busy) return;
-    if (!settings.apiKey) {
-      setError("Set your Anthropic API key in Settings first.");
+    const problem = settingsProblem(settings, server);
+    if (problem) {
+      setError(problem);
       return;
     }
     setBusy(true);
@@ -41,6 +45,7 @@ export function PlanView({
     try {
       const result = await refinePlan(
         settings,
+        server,
         fw,
         plan.context,
         plan,

@@ -1,16 +1,36 @@
 import type { LessonPlan, Settings } from "../types";
+import { defaultSettings } from "./providers";
 
 const PLANS_KEY = "lessonloom.plans";
 const SETTINGS_KEY = "lessonloom.settings";
 
 export function loadSettings(): Settings {
+  const defaults = defaultSettings();
   try {
     const raw = localStorage.getItem(SETTINGS_KEY);
-    if (raw) return JSON.parse(raw) as Settings;
+    if (!raw) return defaults;
+    const parsed = JSON.parse(raw) as Partial<Settings> & {
+      // pre-multi-provider shape
+      apiKey?: string;
+      model?: string;
+    };
+    if (parsed.configs && parsed.provider) {
+      return {
+        ...defaults,
+        ...parsed,
+        configs: { ...defaults.configs, ...parsed.configs },
+      } as Settings;
+    }
+    // Migrate the original single-provider (Anthropic) settings shape.
+    if (typeof parsed.apiKey === "string") {
+      defaults.configs.anthropic.apiKey = parsed.apiKey;
+      if (parsed.model) defaults.configs.anthropic.model = parsed.model;
+      saveSettings(defaults);
+    }
+    return defaults;
   } catch {
-    /* fall through to defaults */
+    return defaults;
   }
-  return { apiKey: "", model: "claude-opus-4-8" };
 }
 
 export function saveSettings(settings: Settings): void {

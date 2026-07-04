@@ -1,6 +1,21 @@
-export interface Settings {
+export type ProviderId =
+  | "anthropic"
+  | "openai"
+  | "openrouter"
+  | "ollama"
+  | "custom";
+
+export interface ProviderConfig {
   apiKey: string;
   model: string;
+  baseUrl: string;
+}
+
+export interface Settings {
+  provider: ProviderId;
+  configs: Record<ProviderId, ProviderConfig>;
+  /** Shared access password for a managed (self-hosted) instance, if it requires one. */
+  appPassword: string;
 }
 
 export interface ContextSettings {
@@ -68,4 +83,4 @@ export interface LessonPlan extends GeneratedPlan {
 
 export type MaterialInput =
   | { kind: "text"; name: string; text: string }
-  | { kind: "pdf"; name: string; base64: string };
+  | { kind: "pdf"; name: string; base64: string; text: string };

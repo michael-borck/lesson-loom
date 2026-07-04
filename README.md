@@ -2,37 +2,61 @@
 
 **AI-assisted lesson plan generator.** Upload a piece of teaching material (a lecture, worksheet, reading, or outline), choose your audience and a pedagogical framework, and generate a structured, timed lesson plan you can refine in conversation and collect into a course dashboard.
 
-**Live app:** https://michael-borck.github.io/lesson-loom/
+- **Landing page:** https://michael-borck.github.io/lesson-loom/
+- **Web app:** https://michael-borck.github.io/lesson-loom/app/
+- **Desktop downloads:** https://github.com/michael-borck/lesson-loom/releases/latest
 
-## How it works
+## Three ways to run it
 
-Lesson Loom is a fully static single-page app — there is **no backend**. You supply your own Anthropic API key in Settings; it is stored only in your browser's local storage, and the app calls the Anthropic API directly from the browser. Your teaching material and generated plans never touch any server other than Anthropic's API. This makes it free to host and privacy-friendly by design.
+| | Where keys live | Best for |
+|---|---|---|
+| **Web app** (GitHub Pages) | Your browser's local storage | Trying it out; individual educators |
+| **Desktop app** (Tauri: Mac/Windows/Linux) | On your machine | Educators worried about material passing through a web page |
+| **Self-hosted** (Docker) | A `.env` on your server — never in any browser | Departments/institutions with one shared org key |
 
-### Current features (MVP / Phase 1)
+In all three, teaching material goes only to the AI provider you choose — there is no Lesson Loom backend collecting anything.
 
-- **Upload material**: PDF (read natively by the model, including figures), DOCX, Markdown, plain text, or pasted text
-- **Context settings**: sector, year level, duration, class size, delivery mode, learner profile, and optional sequence context (previously covered / coming next / prior knowledge / assessment)
-- **Three frameworks**: Gagné's Nine Events, BOPPPS, and the 5E Model — each with a plain-language explanation and "when to use" note
-- **Structured generation**: Bloom-tagged objectives, timed segments that sum to the session length, formative checks with anticipated misconceptions, differentiation/UDL notes, a student-facing GenAI use statement, materials checklist, and homework bridge
-- **Assumption surfacing**: the AI lists the assumptions it made so you can correct them
-- **Conversational refinement**: "cut this to 40 minutes", "make the middle activity group-based" — the plan updates in place
-- **Dashboard**: plans grouped by course, stored in your browser
-- **Markdown export**
+## AI providers
 
-See [`lesson-plan-generator-concept.md`](./lesson-plan-generator-concept.md) for the full concept and roadmap (sequence linking, course map view, framework recommendation engine, standards mapping, and more).
+Anthropic (Claude, default — reads PDFs natively including figures), OpenAI, OpenRouter, Ollama (local — fully offline material handling), or any custom OpenAI-compatible endpoint. Non-Anthropic providers receive PDF text extracted in the browser; scanned/image PDFs need Anthropic.
+
+## Features (MVP / Phase 1)
+
+- Upload PDF / DOCX / Markdown / text, or paste material
+- Context settings: sector, duration, class size, delivery mode, learner profile, GenAI policy, plus optional sequence context (previously covered / coming next / prior knowledge / assessment)
+- Three frameworks with "when to use" guidance: Gagné's Nine Events, BOPPPS, 5E
+- Generated plans: Bloom-tagged objectives, timed segments summing to the session length, formative checks with anticipated misconceptions, differentiation/UDL notes, a student-facing GenAI use statement, materials checklist, homework bridge, and surfaced assumptions
+- Conversational refinement ("cut this to 40 minutes") — the plan updates in place
+- Course-grouped dashboard (browser storage) and Markdown export
+
+See [`lesson-plan-generator-concept.md`](./lesson-plan-generator-concept.md) for the full concept and roadmap.
+
+## Self-hosting with Docker
+
+```sh
+git clone https://github.com/michael-borck/lesson-loom
+cd lesson-loom
+cp .env.example .env   # add your API key(s); set APP_PASSWORD!
+docker compose up -d   # serves on :8080
+```
+
+The container serves the same app in **managed mode**: educators pick a provider/model but never see or enter API keys — the server proxies AI calls and injects keys from the `.env`. Configure Anthropic, an OpenAI-compatible endpoint (OpenAI/OpenRouter/an Ollama container), or both. **Set `APP_PASSWORD`** unless the server is otherwise access-controlled — an open proxy lets anyone spend your API credits. Put it behind your usual reverse proxy for TLS.
 
 ## Development
 
 ```sh
 npm install
-npm run dev      # local dev server
-npm run build    # type-check + production build to dist/
+npm run dev            # web: landing at /, app at /app/
+npm run build          # type-check + build to dist/
+node server/server.mjs # run the self-host server against dist/
+npx tauri dev          # desktop app (requires Rust)
 ```
 
-Deployment is automatic: every push to `main` builds and publishes to GitHub Pages via `.github/workflows/deploy.yml`.
+Repo layout: `index.html` + `landing/` (landing page) · `app/` + `src/` (the React app) · `server/` (self-host proxy) · `src-tauri/` (desktop wrapper) · `scripts/capture.mjs` (regenerates landing screenshots + app icon via headless Chrome).
 
-## Notes & limitations
+## Releasing
 
-- You need an Anthropic API key ([platform.claude.com](https://platform.claude.com/)); usage is billed to your account. The default model is Claude Opus 4.8; Sonnet and Haiku are available in Settings for lower cost.
-- Plans are stored in browser local storage — clearing site data deletes them. Export anything you want to keep as Markdown.
-- PDFs up to ~30 MB are sent to the model as documents; DOCX files are converted to text in the browser.
+- **Web + landing**: every push to `main` deploys to GitHub Pages.
+- **Desktop**: push a tag like `v0.2.0` — GitHub Actions builds macOS (Apple Silicon + Intel), Windows, and Linux installers and publishes a GitHub Release. The landing page picks up the latest release automatically.
+- macOS builds are unsigned for now (right-click → Open on first launch). Notarization can be added later via the `APPLE_*` secrets noted in `.github/workflows/release.yml`.
+- Docker images are built from source on your server (`docker compose up -d --build` after `git pull`).
