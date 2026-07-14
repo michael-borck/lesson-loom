@@ -58,5 +58,5 @@ Repo layout: `index.html` + `landing/` (landing page) · `app/` + `src/` (the Re
 
 - **Web + landing**: every push to `main` deploys to GitHub Pages.
 - **Desktop**: push a tag like `v0.2.0` — GitHub Actions builds macOS (Apple Silicon + Intel), Windows, and Linux installers and publishes a GitHub Release. The landing page picks up the latest release automatically.
-- macOS builds are unsigned for now (right-click → Open on first launch). Notarization can be added later via the `APPLE_*` secrets noted in `.github/workflows/release.yml`.
+- macOS builds are code signed and notarized (via the `APPLE_*` secrets used in `.github/workflows/release.yml`), so they open normally on first launch.
 - Docker images are built from source on your server (`docker compose up -d --build` after `git pull`).

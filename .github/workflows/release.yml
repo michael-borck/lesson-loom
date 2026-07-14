@@ -51,9 +51,13 @@ jobs:
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # macOS signing/notarization (optional — add these repo secrets later):
-          # APPLE_CERTIFICATE / APPLE_CERTIFICATE_PASSWORD / APPLE_SIGNING_IDENTITY
-          # APPLE_ID / APPLE_PASSWORD / APPLE_TEAM_ID
+          # macOS code signing + notarization (no-ops on linux/windows)
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "Lesson Loom ${{ github.ref_name }}"
@@ -63,7 +67,7 @@ jobs:
             - **Windows**: `-setup.exe`
             - **Linux**: `.AppImage` or `.deb`
 
-            macOS builds are not yet notarized — right-click the app and choose Open the first time.
+            macOS builds are code signed and notarized by Apple — they open normally on first launch.
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
