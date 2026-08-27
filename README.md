@@ -8,20 +8,31 @@
 
 ## Four ways to run it
 
-| | Where keys live | Best for |
+| | Keys? | Best for |
 |---|---|---|
-| **Web app** (GitHub Pages) | Your browser's local storage | Trying it out; individual educators |
-| **Desktop app** (Tauri: Mac/Windows/Linux) | On your machine | Educators worried about material passing through a web page |
-| **Standalone HTML** (single file from [Releases](https://github.com/michael-borck/lesson-loom/releases/latest)) | Your browser's local storage | Offline use, emailing to a colleague, locked-down machines — just double-click the file |
+| **Try in your browser** (GitHub Pages) | No key needed — runs on a shared Ollama server (gemma4, thinking off) | Trying it out instantly |
+| **Standalone HTML** (single file from [Releases](https://github.com/michael-borck/lesson-loom/releases/latest)) | Your browser's local storage — bring your own provider/key | Offline use, emailing to a colleague, locked-down machines — just double-click the file |
+| **Desktop app** (Tauri: Mac/Windows/Linux) | On your machine — bring your own provider/key | Educators worried about material passing through a web page |
 | **Self-hosted** (Docker) | A `.env` on your server — never in any browser | Departments/institutions with one shared org key |
 
-In all four, teaching material goes only to the AI provider you choose — there is no Lesson Loom backend collecting anything.
+There is no Lesson Loom backend collecting anything. In the bring-your-own-key versions, teaching material goes only to the AI provider you choose; in the browser demo it goes to the shared Ollama server shown above.
 
 The standalone HTML (`lesson-loom-standalone.html`) is the whole app inlined into one file — open it straight from disk, no server or install. It includes a **Check for updates** button (footer / Settings) that tells you when a newer release is out and links to the download; it never auto-updates. Note: from `file://`, PDF text extraction runs on the main thread (browsers block module workers there) — fine for typical teaching documents.
 
 ## AI providers
 
-Anthropic (Claude, default — reads PDFs natively including figures), OpenAI, OpenRouter, Ollama (local or remote — set the base URL; an optional API key is sent as a Bearer token for auth-proxied/remote instances, and local Ollama is fully offline), or any custom OpenAI-compatible endpoint. Non-Anthropic providers receive PDF text extracted in the browser; scanned/image PDFs need Anthropic.
+The **browser demo** is locked to a shared Ollama server at build time (no key entry). The **standalone HTML, desktop, and self-hosted** builds are bring-your-own-provider: Anthropic (Claude, default — reads PDFs natively including figures), OpenAI, OpenRouter, Ollama (local or remote — set the base URL; an optional API key is sent as a Bearer token for auth-proxied/remote instances, and local Ollama is fully offline), or any custom OpenAI-compatible endpoint. Non-Anthropic providers receive PDF text extracted in the browser; scanned/image PDFs need Anthropic.
+
+To configure the demo on your own Pages/static build, set these env vars when running `npm run build` (they're baked into the bundle — see `deploy.yml`):
+
+```
+DEMO_BASE_URL=https://ollama.example.com/v1   # required, enables demo mode
+DEMO_MODEL=gemma4:12b                          # required
+DEMO_API_KEY=...                               # bearer key, if the endpoint needs one
+DEMO_LABEL="Shared Ollama server"              # shown in the footer/Settings
+```
+
+Note: a key embedded this way is extractable from the public JS — that's unavoidable on static hosting. Treat it as a casual-abuse deterrent: rate-limit at the proxy in front of Ollama and rotate the key if it's abused. For real protection, put a small serverless proxy (e.g. a Cloudflare Worker) in front instead.
 
 ## Features (MVP / Phase 1)
 

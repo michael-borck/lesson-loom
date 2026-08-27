@@ -24,7 +24,17 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+        # Hosted-demo mode: the Pages build is locked to the shared Ollama
+        # server; visitors never enter a key. The bearer key comes from the
+        # DEMO_OLLAMA_KEY repo secret (note: it is embedded in the public JS
+        # bundle — static hosting cannot truly hide it; the server proxy
+        # should rate-limit and the key be rotated if abused).
       - run: npm run build
+        env:
+          DEMO_LABEL: Shared Ollama server
+          DEMO_BASE_URL: https://ollama.locollm.org/v1
+          DEMO_MODEL: gemma4:12b
+          DEMO_API_KEY: ${{ secrets.DEMO_OLLAMA_KEY }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

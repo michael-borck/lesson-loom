@@ -7,6 +7,7 @@ import {
   providerMeta,
 } from "../lib/providers";
 import type { ServerConfig } from "../lib/serverConfig";
+import { getDemoConfig } from "../lib/demo";
 import { UpdateCheck } from "./UpdateCheck";
 
 export function SettingsPage({
@@ -40,6 +41,33 @@ export function SettingsPage({
     onChange(draft);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+  }
+
+  // ---- Hosted demo ("try in your browser"): provider locked at build ----
+  const demo = getDemoConfig();
+  if (demo) {
+    return (
+      <div className="panel narrow">
+        <h2>Settings</h2>
+        <p className="hint">
+          ⚡ This try-in-browser demo is preconfigured to use a shared server
+          ({demo.label} · <code>{demo.model}</code>) — there's no API key to
+          enter. Material you upload is sent to that server for processing.
+        </p>
+        <p className="hint">
+          Want to use your own provider or key — Anthropic, OpenAI,
+          OpenRouter, or your own Ollama? Download the standalone HTML or the
+          desktop app from the{" "}
+          <a href="https://github.com/michael-borck/lesson-loom/releases/latest">
+            releases page
+          </a>
+          .
+        </p>
+        <p className="hint update-check-row">
+          <UpdateCheck />
+        </p>
+      </div>
+    );
   }
 
   // ---- Managed (self-hosted) instance: keys live on the server ----

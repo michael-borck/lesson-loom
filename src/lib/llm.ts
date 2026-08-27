@@ -13,6 +13,7 @@ import type {
 import type { Framework } from "../frameworks";
 import type { ServerConfig } from "./serverConfig";
 import { apiBase } from "./serverConfig";
+import { getDemoConfig } from "./demo";
 import { activeConfig, providerMeta } from "./providers";
 import { anthropicGenerate, anthropicRefine } from "./anthropic";
 import { chatJson } from "./openaiCompat";
@@ -38,6 +39,7 @@ type Target =
       model: string;
       baseUrl: string;
       extraHeaders?: Record<string, string>;
+      extraBody?: Record<string, unknown>;
     };
 
 /** Returns a human-readable problem with the current settings, or null if ready. */
@@ -45,6 +47,8 @@ export function settingsProblem(
   settings: Settings,
   server: ServerConfig | null,
 ): string | null {
+  // Hosted demo: provider/endpoint/model are locked at build time.
+  if (getDemoConfig()) return null;
   if (server) {
     if (server.requiresPassword && !settings.appPassword) {
       return "This instance requires an access password — enter it in Settings.";
@@ -76,6 +80,17 @@ export function settingsProblem(
 }
 
 function resolveTarget(settings: Settings, server: ServerConfig | null): Target {
+  const demo = getDemoConfig();
+  if (demo) {
+    return {
+      type: "openai",
+      apiKey: demo.apiKey,
+      model: demo.model,
+      baseUrl: demo.baseUrl.replace(/\/+$/, ""),
+      // Shared Ollama demo server — keep thinking off for speed.
+      extraBody: { think: false },
+    };
+  }
   const cfg = activeConfig(settings);
   if (server) {
     const extraHeaders = settings.appPassword

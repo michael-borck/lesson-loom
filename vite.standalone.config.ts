@@ -76,6 +76,8 @@ export default defineConfig({
   base: "./",
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
+    // The standalone build is always bring-your-own-key.
+    __DEMO_CONFIG__: "null",
   },
   build: {
     outDir: "dist-standalone",

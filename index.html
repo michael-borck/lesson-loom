@@ -36,7 +36,7 @@
           conversation and grow into a course dashboard.
         </p>
         <div class="hero-ctas">
-          <a class="btn btn-primary" href="./app/">Use in your browser</a>
+          <a class="btn btn-primary" href="./app/">Try in your browser — no key needed</a>
           <a class="btn btn-ghost" id="dl-primary" href="https://github.com/michael-borck/lesson-loom/releases/latest">Download the desktop app</a>
         </div>
         <div class="download-meta">
@@ -48,8 +48,9 @@
           <span id="dl-version" class="hero-note">See all releases →</span>
         </div>
         <p class="hero-note">
-          Your material and API key stay on your device — nothing is stored on
-          our servers, because there are no servers.
+          The browser demo runs on a shared Ollama server — no key needed.
+          For full privacy use the standalone HTML or desktop app: your key
+          and material never leave your device except to your chosen AI provider.
         </p>
       </div>
       <div class="hero-shot">
@@ -119,16 +120,21 @@
     </section>
 
     <section class="run container" id="run">
-      <h2>Three ways to run it</h2>
+      <h2>Four ways to run it</h2>
       <div class="run-grid">
         <div class="run-card">
-          <h3>🌐 In your browser</h3>
-          <p>Nothing to install. Free static hosting, your key stored locally.</p>
+          <h3>🌐 Try in your browser</h3>
+          <p>Nothing to install, no API key to find — plans are generated on a shared Ollama server (gemma4). Material you upload is sent to that server.</p>
           <a class="btn btn-primary" href="./app/">Open the web app</a>
         </div>
         <div class="run-card">
+          <h3>📄 Standalone HTML</h3>
+          <p>One file, no install — double-click and it runs. Bring your own provider/key; works offline and is easy to share.</p>
+          <a class="btn btn-primary" id="dl-standalone" href="https://github.com/michael-borck/lesson-loom/releases/latest">Download the HTML file</a>
+        </div>
+        <div class="run-card">
           <h3>🖥️ On your desktop</h3>
-          <p>A native app that feels like one — for privacy-conscious educators.</p>
+          <p>A native app that feels like one — for privacy-conscious educators. Bring your own provider/key.</p>
           <a class="btn btn-primary" id="dl-secondary" href="https://github.com/michael-borck/lesson-loom/releases/latest">Download</a>
           <p class="run-note" id="dl-other"></p>
         </div>

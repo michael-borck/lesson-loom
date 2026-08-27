@@ -6,9 +6,11 @@ import { downloadMarkdown } from "../lib/markdown";
 export function Dashboard({
   plans,
   onPlansChange,
+  demo,
 }: {
   plans: LessonPlan[];
   onPlansChange: (plans: LessonPlan[]) => void;
+  demo?: boolean;
 }) {
   if (plans.length === 0) {
     return (
@@ -23,9 +25,23 @@ export function Dashboard({
           + New lesson plan
         </a>
         <p className="hint">
-          You'll need an AI provider (Anthropic, OpenAI, OpenRouter, a local
-          or remote Ollama, …) — set one up in{" "}
-          <a href="#/settings">Settings</a>.
+          {demo ? (
+            <>
+              No setup or API key needed — this demo runs on a shared server.
+              To use your own provider, download the standalone HTML or
+              desktop app from the{" "}
+              <a href="https://github.com/michael-borck/lesson-loom/releases/latest">
+                releases page
+              </a>
+              .
+            </>
+          ) : (
+            <>
+              You'll need an AI provider (Anthropic, OpenAI, OpenRouter, a
+              local or remote Ollama, …) — set one up in{" "}
+              <a href="#/settings">Settings</a>.
+            </>
+          )}
         </p>
       </div>
     );

@@ -60,13 +60,16 @@ function render() {
         const a = assetFor(release, p);
         return `<a href="${a ? a.browser_download_url : FALLBACK_URL}">${PLATFORM_LABEL[p]}</a>`;
       });
-    const standalone = release?.assets.find(
-      (a) => a.name.includes("standalone") && a.name.endsWith(".html"),
+    otherEl.innerHTML = `Also for ${others.join(" · ")}`;
+  }
+
+  // Point the standalone-HTML button straight at the release asset.
+  const standaloneEl = document.getElementById("dl-standalone");
+  if (standaloneEl) {
+    const a = release?.assets.find(
+      (x) => x.name.includes("standalone") && x.name.endsWith(".html"),
     );
-    const standaloneLink = standalone
-      ? ` · <a href="${standalone.browser_download_url}">Standalone HTML (single file, no install)</a>`
-      : "";
-    otherEl.innerHTML = `Also for ${others.join(" · ")}${standaloneLink}`;
+    if (a) standaloneEl.href = a.browser_download_url;
   }
 
   document.querySelectorAll(".platform-btn").forEach((b) => {

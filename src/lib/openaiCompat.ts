@@ -14,6 +14,8 @@ export interface OpenAICompatTarget {
   apiKey: string;
   model: string;
   extraHeaders?: Record<string, string>;
+  /** Extra request-body fields, e.g. { think: false } for Ollama. */
+  extraBody?: Record<string, unknown>;
 }
 
 interface ChatOptions {
@@ -101,6 +103,7 @@ export async function chatJson<T>(
     {
       model: target.model,
       messages,
+      ...target.extraBody,
       response_format: {
         type: "json_schema",
         json_schema: { name: opts.schemaName, strict: true, schema: opts.schema },
@@ -126,7 +129,7 @@ export async function chatJson<T>(
   ];
   const second = await streamCompletion(
     target,
-    { model: target.model, messages: fallbackMessages },
+    { model: target.model, messages: fallbackMessages, ...target.extraBody },
     opts.onProgress,
   );
   if (typeof second === "string") return parseLenientJson<T>(second);

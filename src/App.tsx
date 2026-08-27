@@ -5,6 +5,7 @@ import { PlanView } from "./components/PlanView";
 import { SettingsPage } from "./components/SettingsPage";
 import { UpdateCheck } from "./components/UpdateCheck";
 import { loadPlans, loadSettings } from "./lib/storage";
+import { getDemoConfig } from "./lib/demo";
 import { fetchServerConfig, type ServerConfig } from "./lib/serverConfig";
 import type { LessonPlan, Settings } from "./types";
 
@@ -27,6 +28,7 @@ export default function App() {
   const [plans, setPlans] = useState<LessonPlan[]>(loadPlans);
   const [settings, setSettings] = useState<Settings>(loadSettings);
   const [server, setServer] = useState<ServerConfig | null>(null);
+  const demo = getDemoConfig();
 
   useEffect(() => {
     const onHash = () => setRoute(currentRoute());
@@ -69,7 +71,7 @@ export default function App() {
       </div>
     );
   } else {
-    page = <Dashboard plans={plans} onPlansChange={setPlans} />;
+    page = <Dashboard plans={plans} onPlansChange={setPlans} demo={demo !== null} />;
   }
 
   return (
@@ -93,7 +95,9 @@ export default function App() {
           <div>
             {server
               ? "Managed instance — API keys are held on the server; plans are stored in your browser."
-              : "Runs entirely in your browser — your API key and plans never leave this device except for calls to your chosen AI provider."}
+              : demo
+                ? `Try-in-browser demo — plans are generated on a shared server (${demo.label}); material you upload is sent there. Plans are stored only in your browser.`
+                : "Runs entirely in your browser — your API key and plans never leave this device except for calls to your chosen AI provider."}
           </div>
           {!server && <UpdateCheck />}
         </footer>
