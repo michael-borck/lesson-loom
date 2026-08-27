@@ -21,6 +21,9 @@ export function apiBase(): string {
 }
 
 export async function fetchServerConfig(): Promise<ServerConfig | null> {
+  // file:// (standalone HTML) can never be a managed instance — skip the
+  // probe so it doesn't log a CORS error in the console.
+  if (window.location.protocol === "file:") return null;
   try {
     const resp = await fetch(`${appBasePath()}api/config`, {
       cache: "no-store",

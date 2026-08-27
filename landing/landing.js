@@ -60,7 +60,13 @@ function render() {
         const a = assetFor(release, p);
         return `<a href="${a ? a.browser_download_url : FALLBACK_URL}">${PLATFORM_LABEL[p]}</a>`;
       });
-    otherEl.innerHTML = `Also for ${others.join(" · ")}`;
+    const standalone = release?.assets.find(
+      (a) => a.name.includes("standalone") && a.name.endsWith(".html"),
+    );
+    const standaloneLink = standalone
+      ? ` · <a href="${standalone.browser_download_url}">Standalone HTML (single file, no install)</a>`
+      : "";
+    otherEl.innerHTML = `Also for ${others.join(" · ")}${standaloneLink}`;
   }
 
   document.querySelectorAll(".platform-btn").forEach((b) => {

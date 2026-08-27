@@ -7,6 +7,7 @@ import {
   providerMeta,
 } from "../lib/providers";
 import type { ServerConfig } from "../lib/serverConfig";
+import { UpdateCheck } from "./UpdateCheck";
 
 export function SettingsPage({
   settings,
@@ -249,6 +250,10 @@ export function SettingsPage({
         </button>
         {saved && <span className="saved-note">Saved ✓</span>}
       </div>
+
+      <p className="hint update-check-row">
+        <UpdateCheck />
+      </p>
     </div>
   );
 }

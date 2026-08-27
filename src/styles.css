@@ -83,6 +83,38 @@ main {
   border-top: 1px solid var(--border);
 }
 
+.footer .update-check {
+  display: inline-block;
+  margin-top: 0.35rem;
+}
+
+.update-check a {
+  color: var(--accent);
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: inherit;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.btn-link:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.update-check-row {
+  margin-top: 1.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
 /* ---- buttons ---- */
 .btn {
   display: inline-block;

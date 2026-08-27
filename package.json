@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:standalone": "vite build --config vite.standalone.config.ts",
     "preview": "vite preview",
     "tauri": "tauri",
     "capture": "node scripts/capture.mjs"

@@ -3,7 +3,23 @@ import * as pdfjsLib from "pdfjs-dist";
 import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import type { MaterialInput } from "../types";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+// In the standalone single-file build the worker is inlined as a data: URI,
+// which some browsers refuse to pass to `new Worker()` — hand pdf.js a blob
+// URL instead. Lazily resolved on first PDF upload.
+let workerReady: Promise<void> | null = null;
+function ensureWorker(): Promise<void> {
+  if (!workerReady) {
+    workerReady = (async () => {
+      if (pdfWorkerUrl.startsWith("data:")) {
+        const blob = await (await fetch(pdfWorkerUrl)).blob();
+        pdfjsLib.GlobalWorkerOptions.workerSrc = URL.createObjectURL(blob);
+      } else {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+      }
+    })();
+  }
+  return workerReady;
+}
 
 function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -19,6 +35,7 @@ function fileToBase64(file: File): Promise<string> {
 
 async function extractPdfText(data: ArrayBuffer): Promise<string> {
   try {
+    await ensureWorker();
     const doc = await pdfjsLib.getDocument({ data }).promise;
     const pages: string[] = [];
     for (let i = 1; i <= doc.numPages; i++) {

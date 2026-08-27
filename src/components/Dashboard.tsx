@@ -23,7 +23,8 @@ export function Dashboard({
           + New lesson plan
         </a>
         <p className="hint">
-          You'll need an Anthropic API key — set it in{" "}
+          You'll need an AI provider (Anthropic, OpenAI, OpenRouter, a local
+          or remote Ollama, …) — set one up in{" "}
           <a href="#/settings">Settings</a>.
         </p>
       </div>

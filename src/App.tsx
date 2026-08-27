@@ -3,6 +3,7 @@ import { Dashboard } from "./components/Dashboard";
 import { NewLesson } from "./components/NewLesson";
 import { PlanView } from "./components/PlanView";
 import { SettingsPage } from "./components/SettingsPage";
+import { UpdateCheck } from "./components/UpdateCheck";
 import { loadPlans, loadSettings } from "./lib/storage";
 import { fetchServerConfig, type ServerConfig } from "./lib/serverConfig";
 import type { LessonPlan, Settings } from "./types";
@@ -89,9 +90,12 @@ export default function App() {
       <main>{page}</main>
       {!isDesktop && (
         <footer className="footer">
-          {server
-            ? "Managed instance — API keys are held on the server; plans are stored in your browser."
-            : "Runs entirely in your browser — your API key and plans never leave this device except for calls to your chosen AI provider."}
+          <div>
+            {server
+              ? "Managed instance — API keys are held on the server; plans are stored in your browser."
+              : "Runs entirely in your browser — your API key and plans never leave this device except for calls to your chosen AI provider."}
+          </div>
+          {!server && <UpdateCheck />}
         </footer>
       )}
     </div>
