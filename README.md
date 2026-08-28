@@ -2,8 +2,8 @@
 
 **AI-assisted lesson plan generator.** Upload a piece of teaching material (a lecture, worksheet, reading, or outline), choose your audience and a pedagogical framework, and generate a structured, timed lesson plan you can refine in conversation and collect into a course dashboard.
 
-- **Landing page:** https://michael-borck.github.io/lesson-loom/
-- **Web app:** https://michael-borck.github.io/lesson-loom/app/
+- **Landing page:** https://lessonloom.borck.education/
+- **Web app:** https://lessonloom.borck.education/app/
 - **Desktop downloads:** https://github.com/michael-borck/lesson-loom/releases/latest
 
 ## Four ways to run it
