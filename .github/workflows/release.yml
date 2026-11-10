@@ -85,7 +85,7 @@ jobs:
             - **Standalone HTML**: `lesson-loom-standalone.html` — the whole app in one file (bring your own provider/key); just double-click to run.
 
             macOS builds are code signed and notarized by Apple — they open normally on first launch.
-          releaseDraft: false
+          releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
 
