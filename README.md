@@ -1,5 +1,9 @@
 # 🧵 Lesson Loom
 
+<p align="center">
+  <img src="landing/shots/plan.png" alt="Lesson Loom" width="720">
+</p>
+
 **AI-assisted lesson plan generator.** Upload a piece of teaching material (a lecture, worksheet, reading, or outline), choose your audience and a pedagogical framework, and generate a structured, timed lesson plan you can refine in conversation and collect into a course dashboard.
 
 - **Landing page:** https://lessonloom.borck.education/
